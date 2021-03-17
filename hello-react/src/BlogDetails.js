@@ -17,7 +17,7 @@ const BlogDetails = () => {
           <div>{ blog.body }</div>
         </article>
       )}
-    </div>
+    </div> 
   );
 }
  

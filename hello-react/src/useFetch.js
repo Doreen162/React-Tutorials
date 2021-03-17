@@ -1,41 +1,52 @@
-import { useState, useEffect } from 'react';
+import { useState } from "react";
 
-const useFetch = (url) => {
-  const [data, setData] = useState(null);
-  const [isPending, setIsPending] = useState(true);
-  const [error, setError] = useState(null);
+const Create = () => {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [author, setAuthor] = useState('mario');
 
-  useEffect(() => {
-    const abortCont = new AbortController();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const blog = { title, body, author };
 
-    setTimeout(() => {
-      fetch(url, { signal: abortCont.signal })
-      .then(res => {
-        if (!res.ok) { // error coming back from server
-          throw Error('could not fetch the data for that resource');
-        } 
-        return res.json();
-      })
-      .then(data => {
-        setIsPending(false);
-        setData(data);
-        setError(null);
-      })
-      .catch(err => {
-        if (err.name === 'AbortError') {
-          console.log('fetch aborted')
-        } else {
-              // auto catches network / connection error
-        setIsPending(false);
-        setError(err.message);
-        }
-      })
-    }, 1000);
+    fetch('http://localhost:8000/blogs/', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(blog)
+    }).then(() => {
+      console.log('new blog added');
+    })
+  }
 
-    return () => abortCont.abort();
-  }, [url])
-
-  return { data, isPending, error };
+  return (
+    <div className="create">
+      <h2>Add a New Blog</h2>
+      <form onSubmit={handleSubmit}>
+        <label>Blog title:</label>
+        <input 
+          type="text" 
+          required 
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <label>Blog body:</label>
+        <textarea
+          required
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+        ></textarea>
+        <label>Blog author:</label>
+        <select
+          value={author}
+          onChange={(e) => setAuthor(e.target.value)}
+        >
+          <option value="mario">mario</option>
+          <option value="yoshi">yoshi</option>
+        </select>
+        <button>Add Blog</button>
+      </form>
+    </div>
+  );
 }
  
-export default useFetch;
+export default Create;

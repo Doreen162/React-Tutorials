@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import BlogList from "./BlogList";
 
@@ -21,7 +22,7 @@ const Home = () => {
   return (
     <div className="home">
       { isPending && <div>Loading...</div> }
-      {blogs && <BlogList blogs={blogs} title="All Blogs!"/>}
+      {blogs && <BlogList blogs={blogs} />}
     </div>
   );
 }
